@@ -8,10 +8,10 @@ const GifPath = 'gif.txt';
 const StickPath = 'sticker.txt';
 const MessPath = 'messagearray.txt';
 
-const add = (data, file) => {
+/*const add = (data, file) => {
   fs.appendFileSync(file, `${data}`, () => {});
   fs.appendFileSync(file, '\n', () => {});
-};
+};*/
 
 const contentUTF8 = (file) => fs.readFileSync(file, 'utf8');
 const GifContent = contentUTF8(GifPath);

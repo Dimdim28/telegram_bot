@@ -53,9 +53,7 @@ bot.command('stop', (ctx) => ctx.reply('Gachi поезд не остановит
 
 bot.on('message', async (ctx) => {
   const msg = ctx.message;
-  //ctx.reply(msg.message_id);
-  //console.log('msg = ');
-  //console.log(msg);
+  
   if (!!msg.text) {
     const text = msg.text.toLowerCase();
     if (text.includes('бан')) {

@@ -24,21 +24,23 @@ const randomMessageFromArray = (array) => {
   return message;
 };
 
-bot.help((ctx) => ctx.reply ('трахать мишку чирозиди'));
+bot.help((ctx) => ctx.reply('трахать мишку чирозиди'));
 bot.command('CumCum', (ctx) => ctx.telegram.leaveChat(ctx.message.chat.id));
-bot.command('ban', (ctx) => ctx.reply ('Гачи топ, зачем банить?'));
-bot.command('leave', (ctx) => ctx.reply ('Я не уйду, пока мне мой Master не прикажет!'));
-bot.command('exit', (ctx) => ctx.reply ('И не надейся)))'));
-bot.command('stop', (ctx) => ctx.reply ('Gachi поезд не остановить!!!'));
+bot.command('ban', (ctx) => ctx.reply('Гачи топ, зачем банить?'));
+bot.command('leave', (ctx) =>
+  ctx.reply('Я не уйду, пока мне мой Master не прикажет!')
+);
+bot.command('exit', (ctx) => ctx.reply('И не надейся)))'));
+bot.command('stop', (ctx) => ctx.reply('Gachi поезд не остановить!!!'));
 
-const spam = (content, n) => {
+const spam = (content, n, callback) => {
   const array = AddToArray(content);
   const interval = setInterval(() => {
     if (n <= 0) clearInterval(interval);
     n--;
     const rand = randomMessageFromArray(array);
     if (!!rand) {
-      ctx.reply(rand);
+      callback(rand);
     }
   }, 1000);
 };
@@ -55,9 +57,13 @@ bot.on('message', async (ctx) => {
   if (!!msg.text) {
     const text = msg.text.toLowerCase();
 
-    const randomGif = (content) => ctx.replyWithAnimation(randomFromContent(content));
+    const randomGif = (content) =>
+      ctx.replyWithAnimation(randomFromContent(content));
     const randomMess = (content) => ctx.reply(randomFromContent(content));
-    const randomStick = (content) => ctx.replyWithSticker(randomFromContent(content));
+    const randomStick = (content) =>
+      ctx.replyWithSticker(randomFromContent(content));
+
+    let messageNumber = 0;
 
     if (text.includes('бан')) {
       ctx.reply('Себя забань пидор!');
@@ -71,15 +77,43 @@ bot.on('message', async (ctx) => {
     if (text.includes('кик')) {
       ctx.reply('Себя блять кикни!');
     }
+
     if (text.includes('spammess')) {
-      spam(MessContent, 10);
+      const array = AddToArray(MessContent);
+      const interval = setInterval(() => {
+        if (messageNumber >= 10) clearInterval(interval);
+        messageNumber++;
+        const rand = randomMessageFromArray(array);
+        if (!!rand) {
+          ctx.reply(rand);
+        }
+      }, 2000);
     }
+
     if (text.includes('spamstick')) {
-      spam(StickContent, 10);
+      const array = AddToArray(StickContent);
+      const interval = setInterval(() => {
+        if (messageNumber >= 10) clearInterval(interval);
+        messageNumber++;
+        const rand = randomMessageFromArray(array);
+        if (!!rand) {
+          ctx.replyWithSticker(rand);
+        }
+      }, 2000);
     }
+
     if (text.includes('spamgif')) {
-      spam(GifContent, 10);
+      const array = AddToArray(GifContent);
+      const interval = setInterval(() => {
+        if (messageNumber >= 10) clearInterval(interval);
+        messageNumber++;
+        const rand = randomMessageFromArray(array);
+        if (!!rand) {
+          ctx.replyWithAnimation(rand);
+        }
+      }, 2000);
     }
+
     if (text.includes('randmes')) {
       randomMess(MessContent);
     }

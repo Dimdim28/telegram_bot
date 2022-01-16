@@ -53,21 +53,21 @@ bot.command('stop', (ctx) => ctx.reply('Gachi поезд не остановит
 
 bot.on('message', async (ctx) => {
   const msg = ctx.message;
-  
+  const replies = {
+    бан: 'Себя забань пидор',
+    ban: 'Нахуй иди!',
+    kik: 'Нихуя не выйдет!',
+    кик: 'Себя блять кикни!',
+  };
+  const keys = Object.keys(replies);
+
   if (!!msg.text) {
     const text = msg.text.toLowerCase();
-    if (text.includes('бан')) {
-      ctx.reply('Себя забань пидор!');
-    };
-    if (text.includes('ban')) {
-      ctx.reply('Нахуй иди!');
-    };
-    if (text.includes('kik')) {
-      ctx.reply('нихуя не выйдет!');
-    };
-    if (text.includes('кик')) {
-      ctx.reply('Себя блять кикни!');
-    };
+    for(const key of keys) {
+      if (text.includes(key)){
+        ctx.reply(replies[key]);
+      }
+    }
 
     const SpamMes = (contentMes, n) => {
       const arrayMes = AddToArray(contentMes);

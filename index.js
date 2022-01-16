@@ -18,10 +18,14 @@ const GifContent = contentUTF8(GifPath);
 const StickContent = contentUTF8(StickPath);
 const MessContent = contentUTF8(MessPath);
 
-const AddToArray = (data) => data.split('\n');
+const AddToArray = (data) =>{
+  const res = data.split('\n');
+  res.pop();
+  return res;
+};
 
 const randomMessageFromArray = (array) => {
-  const index = Math.floor(Math.random() * (array.length - 1));
+  const index = Math.floor(Math.random() * array.length);
   const message = array[index];
   return message;
 };

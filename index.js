@@ -4,9 +4,9 @@
 const { Telegraf } = require('telegraf');
 const fs = require('fs');
 
-const GifPath = 'gif.txt';
-const StickPath = 'sticker.txt';
-const MessPath = 'messagearray.txt';
+const GIF_PATH = 'gif.txt';
+const STICK_PATH = 'sticker.txt';
+const MESS_PATH = 'messagearray.txt';
 
 /*const add = (data, file) => {
   fs.appendFileSync(file, `${data}`, () => {});
@@ -15,9 +15,9 @@ const MessPath = 'messagearray.txt';
 
 const contentUTF8 = (file) => fs.readFileSync(file, 'utf8');
 const CONTENT = {
-  gifContent: contentUTF8(GifPath),
-  stickContent: contentUTF8(StickPath),
-  messContent: contentUTF8(MessPath),
+  gifContent: contentUTF8(GIF_PATH),
+  stickContent: contentUTF8(STICK_PATH),
+  messContent: contentUTF8(MESS_PATH),
 };
 
 const AddToArray = (data) =>{

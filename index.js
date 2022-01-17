@@ -43,13 +43,26 @@ bot.on('animation', (ctx) => {
   add(idGif, GifPath);
   ctx.reply('Succesfully aded to file');
 });*/
-bot.help((ctx) => ctx.reply('трахать мишку Чирозиди'));
-bot.command('CumCum', (ctx) => ctx.telegram.leaveChat(ctx.message.chat.id));
-bot.command('ban', (ctx) => ctx.reply('Гачи топ, зачем банить?'));
-bot.command('leave', (ctx) => ctx.reply('Я не уйду, пока мне мой Master  не прикажет!'));
-bot.command('exit', (ctx) => ctx.reply('И не надейся)))'));
-bot.command('stop', (ctx) => ctx.reply('Gachi поезд не остановить!!!'));
 
+const commands = {
+  ban: 'Гачи топ, зачем банить?',
+  leave: 'Я не уйду, пока мне мой Master  не прикажет!',
+  exit: 'И не надейся)))',
+  stop: 'Gachi поезд не остановить!!!',
+  help: 'трахать мишку Чирозиди',
+  trueLeave: 'CumCum',
+};
+const commandKeys = Object.keys(commands);
+
+for (const key of commandKeys) {
+  if (key === 'help') {
+    bot.help((ctx) => ctx.reply(commands[key]));
+  } else if (key === 'trueLeave') {
+    bot.command(commands[key], (ctx) => ctx.telegram.leaveChat(ctx.message.chat.id));
+  } else {
+    bot.command(key, (ctx) => ctx.reply(commands[key]));
+  }
+}
 
 bot.on('message', async (ctx) => {
   const msg = ctx.message;

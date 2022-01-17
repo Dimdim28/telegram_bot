@@ -1,42 +1,45 @@
-"use strict";
+'use strict';
 
 //const { messageTypes } = require('node-telegram-bot-api/src/telegram');
-const { Telegraf } = require("telegraf");
-const fs = require("fs");
+const { Telegraf } = require('telegraf');
+const fs = require('fs');
 
-const GifPath = "gif.txt";
-const StickPath = "sticker.txt";
-const MessPath = "messagearray.txt";
-const HelloGifPath = "gif/hello.txt"
-const HelloStickPath = "stick/hello.txt"
+const GIF_PATH = 'gif.txt';
+const STICK_PATH = 'sticker.txt';
+const MESS_PATH = 'messagearray.txt';
+const HELLO_GIF_PATH = "gif/hello.txt"
+const HELLO_STICK_PATH = "stick/hello.txt"
 
-const add = (data, file) => {
+/*const add = (data, file) => {
   fs.appendFileSync(file, `${data}`, () => {});
   fs.appendFileSync(file, "\n", () => {});
+};*/
+
+const contentUTF8 = (file) => fs.readFileSync(file, 'utf8');
+const CONTENT = {
+  gifContent: contentUTF8(GIF_PATH),
+  stickContent: contentUTF8(STICK_PATH),
+  messContent: contentUTF8(MESS_PATH),
+  gifHelloContent: contentUTF8(HELLO_GIF_PATH),
+  stickHelloContent: contentUTF8(HELLO_STICK_PATH)
 };
-const AddToArray = (data) => {
-  const array = data.split("\n");
-  array.pop();
-  return array;
-}
+
+const AddToArray = (data) =>{
+  const res = data.split('\n');
+  res.pop();
+  return res;
+};
+
 const randomMessageFromArray = (array) => {
-  const index = Math.floor(Math.random() * (array.length));
+  const index = Math.floor(Math.random() * array.length);
   const message = array[index];
   return message;
 };
 
-
-const contentUTF8 = (file) => fs.readFileSync(file, "utf8");
-const GifContent = contentUTF8(GifPath);
-const StickContent = contentUTF8(StickPath);
-const MessContent = contentUTF8(MessPath);
-const HelloGifContent =contentUTF8(HelloGifPath);
-const HelloStickContent = contentUTF8(HelloStickPath);
-
-const token = "5041846136:AAFjwTdTJI9vwbYiLLvWDe4OupltRqesXrc";
+const token = '5041846136:AAFjwTdTJI9vwbYiLLvWDe4OupltRqesXrc';
 const bot = new Telegraf(token);
 
-bot.on("sticker", (ctx) => {
+/*bot.on("sticker", (ctx) => {
   const idStick = ctx.update.message.sticker.file_id;
     add(idStick, HelloStickPath);
     ctx.reply("Succesfully aded to file");
@@ -45,110 +48,103 @@ bot.on("animation", (ctx) => {
   const idGif = ctx.update.message.animation.file_id;
   add(idGif, HelloGifPath);
   ctx.reply("Succesfully aded to file");
-});
-bot.help((ctx) => ctx.reply("трахать мишку Чирозиди"));
-bot.command("CumCum", (ctx) => ctx.telegram.leaveChat(ctx.message.chat.id));
-bot.command("ban", (ctx) => ctx.reply("Гачи топ, зачем банить?"));
-bot.command("leave", (ctx) => ctx.reply("Я не уйду, пока мне мой Master  не прикажет!"));
-bot.command("exit", (ctx) => ctx.reply("И не надейся)))"));
-bot.command("stop", (ctx) => ctx.reply("Gachi поезд не остановить!!!"));
+});*/
 
+const commands = {
+  ban: 'Гачи топ, зачем банить?',
+  leave: 'Я не уйду, пока мне мой Master  не прикажет!',
+  exit: 'И не надейся)))',
+  stop: 'Gachi поезд не остановить!!!',
+  help: 'трахать мишку Чирозиди',
+  trueLeave: 'CumCum',
+};
+const commandKeys = Object.keys(commands);
 
-bot.on("message", async (ctx) => {
-  //console.group(ctx);
+for (const key of commandKeys) {
+  if (key === 'help') {
+    bot.help((ctx) => ctx.reply(commands[key]));
+  } else if (key === 'trueLeave') {
+    bot.command(commands[key], (ctx) => ctx.telegram.leaveChat(ctx.message.chat.id));
+  } else {
+    bot.command(key, (ctx) => ctx.reply(commands[key]));
+  }
+}
+
+bot.on('message', async (ctx) => {
+  //collections
   const msg = ctx.message;
-  //ctx.reply(msg.message_id);
-  //console.log('msg = ');
-  //console.log(msg);
+  const replies = {
+    бан: 'Себя забань пидор',
+    ban: 'Нахуй иди!',
+    kik: 'Нихуя не выйдет!',
+    кик: 'Себя блять кикни!',
+  };
+  const replyKeys = Object.keys(replies);
+
+  const replyTypes = {
+    mess(mes){
+      ctx.reply(mes);
+    },
+    stick(mes){
+      ctx.replyWithSticker(mes);
+    },
+    gif(mes){
+      ctx.replyWithAnimation(mes);
+    }
+  };
+  const types = Object.keys(replyTypes);
+
+  const greetings = {
+    stick: ['приве'],
+    gif: ['здрав', 'здаров'],
+  }
+  const greetTypes = Object.keys(greetings);
+
   if (!!msg.text) {
-
-    const SpamMes = (contentMes, n) => {
-      const arrayMes = AddToArray(contentMes);
+    
+    const text = msg.text.toLowerCase();
+    //functions
+    const spam = (contentKey, n, TYPE) => {
+      const array = AddToArray(CONTENT[contentKey]);
       const interval = setInterval(() => {
         if (n <= 0) clearInterval(interval);
         n--;
-        const messageRand = randomMessageFromArray(arrayMes);
-        if (!!messageRand) {
-          ctx.reply(messageRand);
+        const randMes = randomMessageFromArray(array);
+        if (!!randMes) {
+          replyTypes[TYPE](randMes);
         }
-      }, 1500);
+      }, 1000);
     };
 
-    const SpamStick = (contentStick, n) => {
-      const arrayStick = AddToArray(contentStick);
-      const interval = setInterval(() => {
-        if (n <= 0) clearInterval(interval);
-        n--;
-        const stickRand = randomMessageFromArray(arrayStick);
-        if (!!stickRand) {
-          ctx.replyWithSticker(stickRand);
-        }
-      }, 1500);
-    };
-
-    const SpamGif = (contentGif, n) => {
-      const arrayGif = AddToArray(contentGif);
-      const interval = setInterval(() => {
-        if (n <= 0) clearInterval(interval);
-        n--;
-        const gifRand = randomMessageFromArray(arrayGif);
-        if (!!gifRand) {
-          ctx.replyWithAnimation(gifRand);
-        }
-      }, 1600);
-    };
-
-    const randomfromContent = (content) => {
+    const randomFromContent = (content) => {
       const arrayContent = AddToArray(content);
       const randomElement = randomMessageFromArray(arrayContent);
       return randomElement;
     };
 
-    const randomGif =(content) => ctx.replyWithAnimation(randomfromContent(content));
-    const randomMess =(content) => ctx.reply(randomfromContent(content));
-    const randomStick =(content) => ctx.replyWithSticker(randomfromContent(content));
+    const randomCont = (contentKey, TYPE) => replyTypes[TYPE](randomFromContent(CONTENT[contentKey]));
+    //work
+    for(const key of replyKeys) {
+      if (text.includes(key)){
+        ctx.reply(replies[key]);
+      }
+    }
     
-    const text = msg.text.toLowerCase();
-    if (text.includes("бан")) {
-      ctx.reply("Себя забань пидор!");
-    };
-    if (text.includes("ban")) {
-      ctx.reply("Нахуй иди!");
-    };
-    if (text.includes("kik")) {
-      ctx.reply("нихуя не выйдет!");
-    };
-    if (text.includes("кик")) {
-      ctx.reply("Себя блять кикни!");
-    };
+    for (const type of greetTypes) {
+      for (const keyWord of greetings[type]) {
+        if (text.includes(keyWord)) randomCont(type + 'Hello' + 'Content', type);
+      }
+    }
 
-    if (text.includes("spammess")) {
-      SpamMes(MessContent, 20);
-    };
-    if (text.includes("spamstick")) {
-      SpamStick(StickContent, 20);
-    };
-    if (text.includes("spamgif")) {
-      SpamGif(GifContent, 20);
-    };
-    if(text === 'randmes'){
-      randomMess(MessContent);
-    };
-    if(text === 'randgif'){
-      randomGif(GifContent);
-    };
-    if(text === 'randstick'){
-      randomStick(StickContent);
-    };
-    if(text.includes('приве')){
-      randomStick(HelloStickContent);
-    };
-    if(text.includes('здаров')||text.includes('здрав')){
-      randomGif(HelloGifContent);
-      console.log(HelloGifContent);
-    };
+    for (const type of types) {
+      if (text.includes(type)) {
+        if (text.includes('spam' + type)) spam(type + 'Content', 10, type);
+        if (text.includes('rand' + type)) randomCont(type + 'Content', type);
+      }
+    }
+
   }
 });
 
 bot.launch();
-console.log("Похуярили!!");
+console.log('Похуярили!!');

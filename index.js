@@ -14,9 +14,11 @@ const MessPath = 'messagearray.txt';
 };*/
 
 const contentUTF8 = (file) => fs.readFileSync(file, 'utf8');
-const GifContent = contentUTF8(GifPath);
-const StickContent = contentUTF8(StickPath);
-const MessContent = contentUTF8(MessPath);
+const CONTENT = {
+  gifContent: contentUTF8(GifPath),
+  stickContent: contentUTF8(StickPath),
+  messContent: contentUTF8(MessPath),
+};
 
 const AddToArray = (data) =>{
   const res = data.split('\n');
@@ -82,59 +84,46 @@ bot.on('message', async (ctx) => {
       }
     }
 
-    const spamTypes = {
-      spammess(mes){
+    const replyTypes = {
+      mess(mes){
         ctx.reply(mes);
       },
-      spamstick(mes){
+      stick(mes){
         ctx.replyWithSticker(mes);
       },
-      spamgif(mes){
+      gif(mes){
         ctx.replyWithAnimation(mes);
       }
     };
 
-    const spam = (content, n, TYPE) => {
-      const array = AddToArray(content);
+    const spam = (contentKey, n, TYPE) => {
+      const array = AddToArray(CONTENT[contentKey]);
       const interval = setInterval(() => {
         if (n <= 0) clearInterval(interval);
         n--;
         const randMes = randomMessageFromArray(array);
         if (!!randMes) {
-          spamTypes[TYPE](randMes);
+          replyTypes[TYPE](randMes);
         }
       }, 1000);
     };
 
-    const randomfromContent = (content) => {
+    const randomFromContent = (content) => {
       const arrayContent = AddToArray(content);
       const randomElement = randomMessageFromArray(arrayContent);
       return randomElement;
     };
 
-    const randomGif =(content) => ctx.replyWithAnimation(randomfromContent(content));
-    const randomMess =(content) => ctx.reply(randomfromContent(content));
-    const randomStick =(content) => ctx.replyWithSticker(randomfromContent(content));
+    const randomCont = (contentKey, TYPE) => replyTypes[TYPE](randomFromContent(CONTENT[contentKey]));
 
+    const types = Object.keys(replyTypes);
+    for (const type of types) {
+      if (text.includes(type)) {
+        if (text.includes('spam' + type)) spam(type + 'Content', 10, type);
+        if (text.includes('rand' + type)) randomCont(type + 'Content', type);
+      }
+    }
 
-    if (text.includes('spammess')) {
-      spam(MessContent, 10, 'spammess');
-    }
-    if (text.includes('spamstick')) {
-      spam(StickContent, 10, 'spamstick');
-    }
-    if (text.includes('spamgif')) {
-      spam(GifContent, 10, 'spamgif');
-    };
-    if(text.includes('randmes')){
-      randomMess(MessContent);
-    };
-    if(text.includes('randgif')){
-      randomGif(GifContent);
-    };
-    if(text.includes('randstick')){
-      randomStick(StickContent);
-    };
   }
 });
 

@@ -126,13 +126,13 @@ bot.on('message', async (ctx) => {
     if (text.includes('spamgif')) {
       spam(GifContent, 10, 'spamgif');
     };
-    if(text === 'randmes'){
+    if(text.includes('randmes')){
       randomMess(MessContent);
     };
-    if(text === 'randgif'){
+    if(text.includes('randgif')){
       randomGif(GifContent);
     };
-    if(text === 'randstick'){
+    if(text.includes('randstick')){
       randomStick(StickContent);
     };
   }

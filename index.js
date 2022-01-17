@@ -10,10 +10,10 @@ const MESS_PATH = 'messagearray.txt';
 const HELLO_GIF_PATH = "gif/hello.txt"
 const HELLO_STICK_PATH = "stick/hello.txt"
 
-const add = (data, file) => {
+/*const add = (data, file) => {
   fs.appendFileSync(file, `${data}`, () => {});
   fs.appendFileSync(file, "\n", () => {});
-};
+};*/
 
 const contentUTF8 = (file) => fs.readFileSync(file, 'utf8');
 const CONTENT = {
@@ -71,6 +71,7 @@ for (const key of commandKeys) {
 }
 
 bot.on('message', async (ctx) => {
+  //collections
   const msg = ctx.message;
   const replies = {
     бан: 'Себя забань пидор',
@@ -80,26 +81,29 @@ bot.on('message', async (ctx) => {
   };
   const replyKeys = Object.keys(replies);
 
-  if (!!msg.text) {
-    const text = msg.text.toLowerCase();
-    for(const key of replyKeys) {
-      if (text.includes(key)){
-        ctx.reply(replies[key]);
-      }
+  const replyTypes = {
+    mess(mes){
+      ctx.reply(mes);
+    },
+    stick(mes){
+      ctx.replyWithSticker(mes);
+    },
+    gif(mes){
+      ctx.replyWithAnimation(mes);
     }
+  };
+  const types = Object.keys(replyTypes);
 
-    const replyTypes = {
-      mess(mes){
-        ctx.reply(mes);
-      },
-      stick(mes){
-        ctx.replyWithSticker(mes);
-      },
-      gif(mes){
-        ctx.replyWithAnimation(mes);
-      }
-    };
+  const greetings = {
+    stick: ['приве'],
+    gif: ['здрав', 'здаров'],
+  }
+  const greetTypes = Object.keys(greetings);
 
+  if (!!msg.text) {
+    
+    const text = msg.text.toLowerCase();
+    //functions
     const spam = (contentKey, n, TYPE) => {
       const array = AddToArray(CONTENT[contentKey]);
       const interval = setInterval(() => {
@@ -119,12 +123,12 @@ bot.on('message', async (ctx) => {
     };
 
     const randomCont = (contentKey, TYPE) => replyTypes[TYPE](randomFromContent(CONTENT[contentKey]));
-
-    const greetings = {
-      stick: ['приве'],
-      gif: ['здрав', 'здаров'],
+    //work
+    for(const key of replyKeys) {
+      if (text.includes(key)){
+        ctx.reply(replies[key]);
+      }
     }
-    const greetTypes = Object.keys(greetings);
     
     for (const type of greetTypes) {
       for (const keyWord of greetings[type]) {
@@ -132,7 +136,6 @@ bot.on('message', async (ctx) => {
       }
     }
 
-    const types = Object.keys(replyTypes);
     for (const type of types) {
       if (text.includes(type)) {
         if (text.includes('spam' + type)) spam(type + 'Content', 10, type);

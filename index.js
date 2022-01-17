@@ -7,8 +7,10 @@ const fs = require('fs');
 const GIF_PATH = 'gif.txt';
 const STICK_PATH = 'sticker.txt';
 const MESS_PATH = 'messagearray.txt';
-const HELLO_GIF_PATH = "gif/hello.txt"
-const HELLO_STICK_PATH = "stick/hello.txt"
+const VOICE_PATH = 'voice.txt';
+const HELLO_GIF_PATH = 'gif/hello.txt';
+const HELLO_STICK_PATH = 'stick/hello.txt';
+const HELLO_MESS_PATH = 'mess/hello.txt';
 
 /*const add = (data, file) => {
   fs.appendFileSync(file, `${data}`, () => {});
@@ -21,7 +23,9 @@ const CONTENT = {
   stickContent: contentUTF8(STICK_PATH),
   messContent: contentUTF8(MESS_PATH),
   gifHelloContent: contentUTF8(HELLO_GIF_PATH),
-  stickHelloContent: contentUTF8(HELLO_STICK_PATH)
+  stickHelloContent: contentUTF8(HELLO_STICK_PATH),
+  voiceContent: contentUTF8(VOICE_PATH),
+  messHelloContent: contentUTF8(HELLO_MESS_PATH),
 };
 
 const AddToArray = (data) =>{
@@ -50,12 +54,18 @@ bot.on("animation", (ctx) => {
   ctx.reply("Succesfully aded to file");
 });*/
 
+/*bot.on('voice', (ctx) => {
+  const idVoice = ctx.update.message.voice.file_id;
+  add(idVoice,VOICE_PATH);
+  ctx.reply('added to file');
+});*/
+
 const commands = {
   ban: 'Гачи топ, зачем банить?',
   leave: 'Я не уйду, пока мне мой Master  не прикажет!',
   exit: 'И не надейся)))',
-  stop: 'Gachi поезд не остановить!!!',
-  help: 'трахать мишку Чирозиди',
+  stop: 'Поезд не остановить!!!',
+  help: 'Мне бы кто помог...',
   trueLeave: 'CumCum',
 };
 const commandKeys = Object.keys(commands);
@@ -71,13 +81,14 @@ for (const key of commandKeys) {
 }
 
 bot.on('message', async (ctx) => {
+  console.log(ctx);
   //collections
   const msg = ctx.message;
   const replies = {
-    бан: 'Себя забань пидор',
+    бан: 'Не выйдет!!!',
     ban: 'Нахуй иди!',
-    kik: 'Нихуя не выйдет!',
-    кик: 'Себя блять кикни!',
+    kik: 'Комманда не найдена, просьба пойти на три буквы',
+    кик: 'Себя кикни, олень!',
   };
   const replyKeys = Object.keys(replies);
 
@@ -90,6 +101,9 @@ bot.on('message', async (ctx) => {
     },
     gif(mes){
       ctx.replyWithAnimation(mes);
+    },
+    voice(mes){
+      ctx.replyWithVoice(mes);
     }
   };
   const types = Object.keys(replyTypes);
@@ -97,11 +111,12 @@ bot.on('message', async (ctx) => {
   const greetings = {
     stick: ['приве'],
     gif: ['здрав', 'здаров'],
+    mess:['доброе утро','дорый день','добрый вечер','доброй ночи']
   }
   const greetTypes = Object.keys(greetings);
 
   if (!!msg.text) {
-    
+    //console.log(ctx.update.message.from);
     const text = msg.text.toLowerCase();
     //functions
     const spam = (contentKey, n, TYPE) => {

@@ -69,38 +69,26 @@ bot.on('message', async (ctx) => {
       }
     }
 
-    const SpamMes = (contentMes, n) => {
-      const arrayMes = AddToArray(contentMes);
-      const interval = setInterval(() => {
-        if (n <= 0) clearInterval(interval);
-        n--;
-        const messageRand = randomMessageFromArray(arrayMes);
-        if (!!messageRand) {
-          ctx.reply(messageRand);
-        }
-      }, 1000);
+    const spamTypes = {
+      spammess(mes){
+        ctx.reply(mes);
+      },
+      spamstick(mes){
+        ctx.replyWithSticker(mes);
+      },
+      spamgif(mes){
+        ctx.replyWithAnimation(mes);
+      }
     };
 
-    const SpamStick = (contentStick, n) => {
-      const arrayStick = AddToArray(contentStick);
+    const spam = (content, n, TYPE) => {
+      const array = AddToArray(content);
       const interval = setInterval(() => {
         if (n <= 0) clearInterval(interval);
         n--;
-        const stickRand = randomMessageFromArray(arrayStick);
-        if (!!stickRand) {
-          ctx.replyWithSticker(stickRand);
-        }
-      }, 1000);
-    };
-
-    const SpamGif = (contentGif, n) => {
-      const arrayGif = AddToArray(contentGif);
-      const interval = setInterval(() => {
-        if (n <= 0) clearInterval(interval);
-        n--;
-        const gifRand = randomMessageFromArray(arrayGif);
-        if (!!gifRand) {
-          ctx.replyWithAnimation(gifRand);
+        const randMes = randomMessageFromArray(array);
+        if (!!randMes) {
+          spamTypes[TYPE](randMes);
         }
       }, 1000);
     };
@@ -117,13 +105,13 @@ bot.on('message', async (ctx) => {
 
 
     if (text.includes('spammess')) {
-      SpamMes(MessContent, 10);
+      spam(MessContent, 10, 'spammess');
     }
     if (text.includes('spamstick')) {
-      SpamStick(StickContent, 10);
+      spam(StickContent, 10, 'spamstick');
     }
     if (text.includes('spamgif')) {
-      SpamGif(GifContent, 10);
+      spam(GifContent, 10, 'spamgif');
     };
     if(text === 'randmes'){
       randomMess(MessContent);

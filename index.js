@@ -7,17 +7,21 @@ const fs = require('fs');
 const GIF_PATH = 'gif.txt';
 const STICK_PATH = 'sticker.txt';
 const MESS_PATH = 'messagearray.txt';
+const HELLO_GIF_PATH = "gif/hello.txt"
+const HELLO_STICK_PATH = "stick/hello.txt"
 
-/*const add = (data, file) => {
+const add = (data, file) => {
   fs.appendFileSync(file, `${data}`, () => {});
-  fs.appendFileSync(file, '\n', () => {});
-};*/
+  fs.appendFileSync(file, "\n", () => {});
+};
 
 const contentUTF8 = (file) => fs.readFileSync(file, 'utf8');
 const CONTENT = {
   gifContent: contentUTF8(GIF_PATH),
   stickContent: contentUTF8(STICK_PATH),
   messContent: contentUTF8(MESS_PATH),
+  gifHelloContent: contentUTF8(HELLO_GIF_PATH),
+  stickHelloContent: contentUTF8(HELLO_STICK_PATH)
 };
 
 const AddToArray = (data) =>{
@@ -35,15 +39,15 @@ const randomMessageFromArray = (array) => {
 const token = '5041846136:AAFjwTdTJI9vwbYiLLvWDe4OupltRqesXrc';
 const bot = new Telegraf(token);
 
-/*bot.on('sticker', (ctx) => {
+/*bot.on("sticker", (ctx) => {
   const idStick = ctx.update.message.sticker.file_id;
-  add(idStick, StickPath);
-  ctx.reply('Succesfully aded to file');
+    add(idStick, HelloStickPath);
+    ctx.reply("Succesfully aded to file");
 });
-bot.on('animation', (ctx) => {
+bot.on("animation", (ctx) => {
   const idGif = ctx.update.message.animation.file_id;
-  add(idGif, GifPath);
-  ctx.reply('Succesfully aded to file');
+  add(idGif, HelloGifPath);
+  ctx.reply("Succesfully aded to file");
 });*/
 
 const commands = {
@@ -74,11 +78,11 @@ bot.on('message', async (ctx) => {
     kik: 'Нихуя не выйдет!',
     кик: 'Себя блять кикни!',
   };
-  const keys = Object.keys(replies);
+  const replyKeys = Object.keys(replies);
 
   if (!!msg.text) {
     const text = msg.text.toLowerCase();
-    for(const key of keys) {
+    for(const key of replyKeys) {
       if (text.includes(key)){
         ctx.reply(replies[key]);
       }
@@ -115,6 +119,18 @@ bot.on('message', async (ctx) => {
     };
 
     const randomCont = (contentKey, TYPE) => replyTypes[TYPE](randomFromContent(CONTENT[contentKey]));
+
+    const greetings = {
+      stick: ['приве'],
+      gif: ['здрав', 'здаров'],
+    }
+    const greetTypes = Object.keys(greetings);
+    
+    for (const type of greetTypes) {
+      for (const keyWord of greetings[type]) {
+        if (text.includes(keyWord)) randomCont(type + 'Hello' + 'Content', type);
+      }
+    }
 
     const types = Object.keys(replyTypes);
     for (const type of types) {

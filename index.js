@@ -1,8 +1,9 @@
 'use strict';
 
 //const { messageTypes } = require('node-telegram-bot-api/src/telegram');
-const { Telegraf } = require('telegraf');
+const { Telegraf, Context } = require('telegraf');
 const fs = require('fs');
+const { userInfo } = require('os');
 
 const GIF_PATH = 'gif.txt';
 const STICK_PATH = 'sticker.txt';
@@ -11,11 +12,12 @@ const VOICE_PATH = 'voice.txt';
 const HELLO_GIF_PATH = 'gif/hello.txt';
 const HELLO_STICK_PATH = 'stick/hello.txt';
 const HELLO_MESS_PATH = 'mess/hello.txt';
+const CHAT_MEMBERS_PATH = 'chatmembers.txt';
 
-/*const add = (data, file) => {
+const add = (data, file) => {
   fs.appendFileSync(file, `${data}`, () => {});
   fs.appendFileSync(file, "\n", () => {});
-};*/
+};
 
 const contentUTF8 = (file) => fs.readFileSync(file, 'utf8');
 const CONTENT = {
@@ -26,6 +28,7 @@ const CONTENT = {
   stickHelloContent: contentUTF8(HELLO_STICK_PATH),
   voiceContent: contentUTF8(VOICE_PATH),
   messHelloContent: contentUTF8(HELLO_MESS_PATH),
+  chatMembersContent: contentUTF8(CHAT_MEMBERS_PATH),
 };
 
 const AddToArray = (data) =>{
@@ -61,12 +64,12 @@ bot.on("animation", (ctx) => {
 });*/
 
 const commands = {
-  ban: 'Гачи топ, зачем банить?',
+  ban: 'Зачем банить?',
   leave: 'Я не уйду, пока мне мой Master  не прикажет!',
   exit: 'И не надейся)))',
   stop: 'Поезд не остановить!!!',
   help: 'Мне бы кто помог...',
-  trueLeave: 'CumCum',
+  trueLeave: 'GoOut',
 };
 const commandKeys = Object.keys(commands);
 
@@ -82,11 +85,22 @@ for (const key of commandKeys) {
 
 bot.on('message', async (ctx) => {
   console.log(ctx);
+  /*const user = ctx.update.message.from;
+  if(!!user){
+    const USERSOBJ = AddToArray(CONTENT.chatMembersContent);
+    console.log(USERSOBJ);
+    for(const i in USERSOBJ){
+      console.log(USERSOBJ[i]);
+     // if(!USERSOBJ[i].includes(user.id)){
+       add(user.id + ' ' + user.first_name + ' ' + user.last_name + ' ' + ' ' + user.username,CHAT_MEMBERS_PATH);
+      // }
+    }
+  }*/
   //collections
   const msg = ctx.message;
   const replies = {
     бан: 'Не выйдет!!!',
-    ban: 'Нахуй иди!',
+    ban: 'Не сможешь)!',
     kik: 'Комманда не найдена, просьба пойти на три буквы',
     кик: 'Себя кикни, олень!',
   };
@@ -162,4 +176,4 @@ bot.on('message', async (ctx) => {
 });
 
 bot.launch();
-console.log('Похуярили!!');
+console.log('бот запущен');

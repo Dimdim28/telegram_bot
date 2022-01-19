@@ -85,17 +85,15 @@ for (const key of commandKeys) {
 
 bot.on('message', async (ctx) => {
   console.log(ctx);
-  /*const user = ctx.update.message.from;
+
+  const user = ctx.update.message.from;
   if(!!user){
-    const USERSOBJ = AddToArray(CONTENT.chatMembersContent);
-    console.log(USERSOBJ);
-    for(const i in USERSOBJ){
-      console.log(USERSOBJ[i]);
-     // if(!USERSOBJ[i].includes(user.id)){
-       add(user.id + ' ' + user.first_name + ' ' + user.last_name + ' ' + ' ' + user.username,CHAT_MEMBERS_PATH);
-      // }
+    const USERSOBJ = AddToArray(contentUTF8(CHAT_MEMBERS_PATH));
+    const line = user.id + ' ' + user.first_name + ' ' + user.last_name + ' ' + ' ' + user.username;
+    if(!USERSOBJ.includes(line)){
+      add(line,CHAT_MEMBERS_PATH);
     }
-  }*/
+  }
   //collections
   const msg = ctx.message;
   const replies = {
